@@ -2,6 +2,7 @@
 from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
+import urllib as URL
 import urllib.request, urllib.parse, urllib.error
 import json
 import os
@@ -48,7 +49,7 @@ def processRequest(req):
     
     # Prepare and call API URL
     link = "http://api.bart.gov/api/etd.aspx?cmd=etd&orig="+src_stn+"/apikey/" +key + "/"
-    str_data = urllib.request.urlopen(link).read()
+    str_data = URL.urlopen(link).read()
     dom = parseString(str_data)
                       
     for etd in dom.getElementsByTagName('etd'):
