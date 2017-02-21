@@ -9,6 +9,7 @@ import os
 from flask import Flask
 from flask import request
 from flask import make_response
+from xml.dom.minidom import parseString
 
 app = Flask(__name__)
 
@@ -35,39 +36,40 @@ def webhook():
 def processRequest(req):
 
     # Check for correct action invocked
-    if req.get("result").get("action") != "TrainRunningStatus":                  
+    if req.get("result").get("action") != "BARTAssistant":                  
         return {}
     
     # Extract input parameters
     result = req.get("result")                                                  
     parameters = result.get("parameters")
-    inq_date = parameters.get("inq_date")
-    cln_inq_date = inq_date.replace('-','')
-    raw_train_num = parameters.get("train_num")
-    train_num = raw_train_num.replace(" ","")
+    src_stn = parameters.get("src_stn")
     key = os.getenv('API_KEY')
+    full_speech = ""
     
     # Prepare and call API URL
-    link = "http://api.railwayapi.com/live/train/" + train_num + "/doj/" + cln_inq_date +"/apikey/" +key + "/"
-    result = urllib.request.urlopen(link).read()
-    data = json.loads(result)
+    link = "http://api.bart.gov/api/etd.aspx?cmd=etd&orig="+src_stn+"/apikey/" +key + "/"
+    str_data = urllib.request.urlopen(link).read()
+    dom = parseString(str_data)
                       
-    # Extract train position
-    raw_speech = data.get('position')                                            
-    
-    # Exception handling
-    if raw_speech == "-":
-        cln_speech = "Oops somthing went wrong, please try again later"
-    else:
-        cln_speech = raw_speech
-    
-    #Prepare response speech
-    speech = raw_train_num + "   " + cln_inq_date + "   " + cln_speech           
+    for etd in dom.getElementsByTagName('etd'):
+        raw_dest = etd.getElementsByTagName('destination')[0].firstChild.nodeValue
+        cln_dest = raw_dest.replace("/"," ")
+        dur = ""
+        ls_min = ""
+
+        for min in etd.getElementsByTagName('minutes'):
+            dur = min.firstChild.data
+            ls_min = ls_min + dur + ","
+        cln_ls_min = ls_min.rstrip(",")
+        raw_speech = "Next " + cln_dest +" Train arriving in"+ " " + cln_ls_min + " minutes. "
+        full_speech = full_speech + raw_speech
+
+    speech = full_speech.replace("Leaving","0")        
     
     return {
         "speech": speech,
         "displayText": speech,
-        "source": "Indian Railway API"
+        "source": "API.Bart.gov"
     }
 
 # Execute python app
