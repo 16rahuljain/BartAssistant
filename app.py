@@ -48,7 +48,7 @@ def processRequest(req):
     full_speech = ""
     
     # Prepare and call API URL
-    link = "http://api.bart.gov/api/etd.aspx?cmd=etd&orig="+src_stn+"/apikey/" +key + "/"
+    link = "http://api.bart.gov/api/etd.aspx?cmd=etd&orig="+src_stn+"/apikey/"+key
     str_data = URL.urlopen(link).read()
     dom = parseString(str_data)
                       
