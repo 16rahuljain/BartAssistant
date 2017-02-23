@@ -68,13 +68,13 @@ def processRequest(req):
         
         if dest_abbr.upper() == end_point.upper() :
             full_speech = ""
-        for min in etd.getElementsByTagName('minutes'):
-            dur = min.firstChild.data
-            ls_min = ls_min + dur + ","
-        cln_ls_min = ls_min.rstrip(",")
-        raw_speech = "Next " + cln_dest +" Train arriving in"+ " " + cln_ls_min + " minutes. "
-        full_speech = full_speech + raw_speech
-        break
+            for min in etd.getElementsByTagName('minutes'):
+                dur = min.firstChild.data
+                ls_min = ls_min + dur + ","
+            cln_ls_min = ls_min.rstrip(",")
+            raw_speech = "Next " + cln_dest +" Train arriving in"+ " " + cln_ls_min + " minutes. "
+            full_speech = full_speech + raw_speech
+            break
         else:
             full_speech = "Direct train is not available"
     speech = full_speech.replace("Leaving","0")        
