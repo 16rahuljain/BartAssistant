@@ -43,8 +43,8 @@ def processRequest(req):
     # Extract input parameters
     result = req.get("result")                                                  
     parameters = result.get("parameters")
-    src_stn = (parameters.get("src_stn")).upper()
-    end_point = (parameters.get("end_point")).upper()
+    src_stn = parameters.get("src_stn")
+    end_point = parameters.get("end_point")
     key = os.getenv('API_KEY')
     full_speech = ""
     
@@ -66,7 +66,7 @@ def processRequest(req):
         dur = ""
         ls_min = ""
         
-        if dest_abbr == end_point:
+        if dest_abbr.upper() == end_point.upper() :
             full_speech = ""
         for min in etd.getElementsByTagName('minutes'):
             dur = min.firstChild.data
