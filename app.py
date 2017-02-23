@@ -43,10 +43,17 @@ def processRequest(req):
     # Extract input parameters
     result = req.get("result")                                                  
     parameters = result.get("parameters")
-    src_stn = parameters.get("src_stn")
+    src_stn = (parameters.get("src_stn")).upper()
+    end_point = (parameters.get("end_point")).upper()
     key = os.getenv('API_KEY')
     full_speech = ""
     
+    if len(src_stn)!= 4 or len(end_point) != 4 :
+        return{
+            "speech": "station code is not valid, please try again",
+            "displayText": "station code is not valid, please try again",
+            "source": "API.Bart.gov"
+        }
     # Prepare and call API URL
     link = "http://api.bart.gov/api/etd.aspx?cmd=etd&orig="+src_stn+"&key="+key
     str_data = URL.urlopen(link).read()
@@ -57,14 +64,18 @@ def processRequest(req):
         cln_dest = raw_dest.replace("/"," ")
         dur = ""
         ls_min = ""
-
+        
+        if dest_abbr == end_stn:
+            full_speech = ""
         for min in etd.getElementsByTagName('minutes'):
             dur = min.firstChild.data
             ls_min = ls_min + dur + ","
         cln_ls_min = ls_min.rstrip(",")
         raw_speech = "Next " + cln_dest +" Train arriving in"+ " " + cln_ls_min + " minutes. "
         full_speech = full_speech + raw_speech
-
+            break
+        else:
+            full_speech = "Direct train not available"
     speech = full_speech.replace("Leaving","0")        
     
     return {
