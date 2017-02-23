@@ -76,7 +76,7 @@ def processRequest(req):
         full_speech = full_speech + raw_speech
             break
         else:
-            full_speech = "Direct train not available"
+            full_speech = "Direct train is not available"
     speech = full_speech.replace("Leaving","0")        
     
     return {
