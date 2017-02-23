@@ -61,6 +61,7 @@ def processRequest(req):
                       
     for etd in dom.getElementsByTagName('etd'):
         raw_dest = etd.getElementsByTagName('destination')[0].firstChild.nodeValue
+        dest_abbr = etd.getElementsByTagName('abbreviation')[0].firstChild.nodeValue
         cln_dest = raw_dest.replace("/"," ")
         dur = ""
         ls_min = ""
