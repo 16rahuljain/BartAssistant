@@ -74,7 +74,7 @@ def processRequest(req):
         cln_ls_min = ls_min.rstrip(",")
         raw_speech = "Next " + cln_dest +" Train arriving in"+ " " + cln_ls_min + " minutes. "
         full_speech = full_speech + raw_speech
-            break
+        break
         else:
             full_speech = "Direct train is not available"
     speech = full_speech.replace("Leaving","0")        
