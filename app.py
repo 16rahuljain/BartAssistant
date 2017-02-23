@@ -66,7 +66,7 @@ def processRequest(req):
         dur = ""
         ls_min = ""
         
-        if dest_abbr == end_stn:
+        if dest_abbr == end_point:
             full_speech = ""
         for min in etd.getElementsByTagName('minutes'):
             dur = min.firstChild.data
